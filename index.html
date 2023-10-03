@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+      body .movie-container,.movie-cart-container{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 20px;
+      }
+      .movie-container  .card,.movie-cart-container .card {
+        height: 100%;
+        border: 2px solid black;
+        background-color: whitesmoke;
+        border-radius: 15px;
+       
+      }
+      .movie-container img,.movie-cart-container img {
+        width: 350px;
+        height: 350px;
+        border-radius: 15px 15px 0 0;
+      }
+      .card-image {
+        border-radius: 15px 15px 0 0;
+      }
+      .card-content{
+        display:flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+      .card-content p,h4{
+        margin: 0;
+        padding: 0;
+      }
+      .card-content h4{
+        font-size: 20px;
+        text-transform: uppercase;
+        color: green;
+      }
+      .card-content button {
+        border: 1px solid black;
+        background-color: orange;
+        margin: 10px 0;
+        width: 150px;
+        height: 30px;
+        border-radius: 5px;
+        color: white;
+        box-shadow: 5px 5px 7px gray;
+        cursor: pointer;
+      }
+      .card-content button:hover{
+        background-color: white;
+        color: black;
+      }
+      .card-rating{
+        display: flex;
+      }
+      .card-content svg{
+        width: 50px;
+      }
+      .modal{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        width: 100vw;
+        background-color: transparent;
+        position: fixed;
+        display: none;
+        top: 0;
+        z-index: 1;
+      }
+      .modal-content{
+
+        /* opacity: 1; */
+        /* position: fixed;
+        bottom: 0; */
+        width: 80%;
+        border: 1px solid black;
+        background-color: whitesmoke;
+        transition: opacity 0.5s ease-out;
+        
+      }
+      .modal-content .modal-header{
+           font-size: 20px;
+           color: white;
+           background-color: gray;
+           padding: 20px 0px;
+           text-align: center;
+
+      }
+      .modal-content .modal-header button{
+           float: right;
+           margin-right: 10px;
+  
+      }
+      .modal-content .modal-body{
+           font-size: 20px;
+           color: black;
+           background-color: white;
+           padding: 50px 0px;
+           text-align: center;
+
+      }
+      .modal-content .modal-footer{
+           font-size: 20px;
+           color: white;
+           background-color: black;
+           padding: 20px 0px;
+           text-align: center;
+
+      }
+      .btn-group{
+        display: flex;
+      }
+      .btn-group input{
+        height: 20px;
+        width: 50px;
+        margin-top: 10px;
+      }
+      .btn-cart{
+        background-color: white !important;
+        color: black !important;
+        width: 50% !important;
+      }
+    </style>
+</head>
+
+<body>
+    <section class="test-section">
+        <h1 class="test">Good Evening1</h1>
+        <h1 class="test">Good Evening2</h1>
+        <h6 id="test-id">Hello Guys,</h6>
+        <p>Welcome to our APP</p>
+    </section>
+</body>
+
+<script>
+  document.querySelector(".test-section").style.display = 'none';
+  const data = [
+    {
+        id: 1,
+        name: 'Jailer',
+        image: 'https://www.boredpanda.com/blog/wp-content/uploads/2022/12/MV5BNDgyNGM4NTYtN2M3MS00YTY2LTk0OWUtZmIzYjg3MmQ0OGM4XkEyXkFqcGdeQXVyODk4OTc3MTY_V1_FMjpg_UX1000_-638ef57447b39__700.jpg',
+        rating: 2,
+        price:34
+    },
+    {
+        id: 2,
+        name: 'The Marvel',
+        image: 'https://hips.hearstapps.com/hmg-prod/images/disney-movies-2023-the-marvels-1673548008.jpeg',
+        rating: 5,
+        price:104
+    },
+    {
+        id: 3,
+        name: 'Bloddy daddy',
+        image: 'https://images.mid-day.com/images/images/2023/may/bloddydaddmainposter_d.jpg',
+        rating: 4,
+        price:340
+    }
+  ];
+
+  const filtersData = [
+    {
+      id:1,
+      title: 'name'
+    },
+    {
+      id:2,
+      title:'rating'
+    },
+    {
+      id:3,
+      title:'description'
+    } 
+  ];
+
+  //map function eta akta object ke copy kore notun object baniye return kore ar output hoy notun array
+//   const newFiltersData = filtersData.map((filter,index) => {
+//   const filterObj = {...filter};
+//   const newFilterObj = {
+//     ...filterObj,
+//     key: filter-${index}
+//   }
+//   if(index>1){
+//     newFilterObj.key = filter-${index+10};
+//   }
+//   return newFilterObj;
+//   })
+//   console.log("map",newFiltersData);
+
+//   //filter akhane key theke index k split kore ber kore ene zodi index 10 er boro hoy tokhon oi larger than 10 er array gula return korbe
+//   const filterDataAfterFilter = newFiltersData.filter(newF=>{
+//     //split korle za diye split korbo tar age pore za thakbe ta onusare array hobe
+//       if(Number(newF.key.split("-")[1]) > 10) return true; 
+//   });
+//   console.log("filter",filterDataAfterFilter)
+
+  const filterSection = document.createElement('div');
+  
+  let modalData = {};
+  const newSection =  document.createElement('section')
+  const newHeaderSection =  document.createElement('section')
+  newHeaderSection.classList.add('header')
+  //30 September
+  newHeaderSection.innerHTML = '<h1><span id="home">Home</span>cart item <span id="cart-items"></span></h1>'
+  //30 September
+  document.body.appendChild(newHeaderSection)
+  newSection.classList.add("movie-container")
+
+  let starIcon = '<svg><path xmlns="http://www.w3.org/2000/svg" d="M 62.397 71.772 L 45 62.625 l -17.397 9.146 l 3.322 -19.372 L 16.851 38.68 l 19.45 -2.827 L 45 18.229 l 8.699 17.625 l 19.45 2.827 L 59.074 52.399 L 62.397 71.772 z" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1;" transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round"/></svg>'
+
+  const getRating = (rating) => {
+    let star = ''
+    for(let i = 0; i < rating;i++){
+        star += '*';
+    }
+    return star;
+  }
+  const cart =[];
+  
+  data.forEach(da=>{
+    newSection.innerHTML += `
+    <div class="card">
+       <div class="card-image">
+           <img src=${da.image} alt="Image" />
+        </div>
+        <div class="card-content">
+            <h4 class="card-title">${da?.name}</h4>
+            <p class="card-rating">${getRating(da?.rating)}</p>
+            <button class="card-btn" id="${da.id}">Buy Ticket</button>
+    
+        </div>   
+    </div>
+    `
+  })
+
+  document.body.appendChild(newSection);
+
+  const modalFunc = () => {
+    const modalSection = document.createElement('div');
+  modalSection.classList.add("modal");
+  modalSection.innerHTML = `
+  <div class="modal-content">
+     <div class="modal-header">
+       Hello
+      <button>
+        &#215;
+      </button>
+    </div>
+     <div class="modal-body">body</div>
+     <div class="modal-footer">Footer</div>
+    </div>
+  `
+  document.body.appendChild(modalSection);
+  }
+
+  modalFunc()
+ 
+  const cardContents = document.querySelectorAll('.card-content');
+ for(const cardContent of cardContents){
+    console.log(cardContent);
+    const btn = cardContent.querySelector('.card-btn');
+    const cardTitle = cardContent.querySelector('.card-title');
+    console.log(btn);
+
+    //30 September
+    btn.addEventListener('click',()=>{
+      const selectedItem = data.find(da=>da.id === Number(btn.id))
+      if(!cart.includes(selectedItem)){
+        cart.push(selectedItem)
+      } else{
+        alert("Already added!")
+      }
+      console.log(typeof(btn.id),selectedItem);
+      document.getElementById("cart-items").innerText = cart.length 
+      //30 September
+
+    // document.querySelector('.header').innerText = cardTitle.innerText;
+    // modalData = {title:cardTitle.innerText}
+    // // document.querySelector('.modal').style.opacity = "1";
+    // document.querySelector('.modal').style.display = "block";
+
+
+  })
+ }
+
+ document.querySelector(".modal-content .modal-header button").addEventListener('click',()=>{
+    // document.querySelector('.modal').style.opacity = "0";
+    document.querySelector('.modal').style.display = "none";
+    
+  })
+  // window.addEventListener("click",(event)=>{
+  //    console.log(event.target,document.querySelector('.modal'))
+
+  //   if(event.target === document.querySelector('.modal')){
+  //     // document.querySelector('.modal-content').style.opacity = "0";
+  //     document.querySelector('.modal').style.display = "none";
+  //   }
+  // })
+
+  //30 September
+  document.querySelector("#cart-items").addEventListener("click", ()=>{
+    document.querySelector(".movie-container").style.display = "none"
+    const section = document.createElement("div");
+    section.classList.add("movie-cart-container");
+    section.innerHTML = '';
+    cart.forEach(da=>{
+    section.innerHTML += `
+    <div class="card">
+       <div class="card-image">
+           <img src=${da.image} alt="Image" />
+        </div>
+        <div class="card-content">
+            <h4 class="card-title">${da?.name}</h4>
+            <div class="btn-group">
+              <button class="btn-cart minus">-</button>
+              <input type="number" class="value" value='1'/>
+              <button class="btn-cart plus">+</button>
+              </div>
+              <div>
+                <p id=${da.id}>${da.price}</p>
+                </div>
+        </div>   
+    </div>
+    `
+  })
+  if(document.querySelector(".movie-cart-container")){
+      document.querySelector(".movie-cart-container").remove()
+    }
+  document.body.appendChild(section);
+  // document.querySelectorAll(".plus").forEach((t)=>{
+  //   t.addEventListener("click",()=>{
+  //   const value = document.querySelector(".value").value;
+  //   const price = document.querySelector("#price").innerText;
+  //   document.querySelector(".value").value = Number(value) + 1
+  //   document.querySelector("#price").innerText = 34*Number(document.querySelector(".value").value);
+  // })
+  // })
+
+  //30 September
+   document.querySelectorAll(".movie-cart-container .card").forEach((mCart=>{
+   mCart.querySelector('.plus').addEventListener('click',()=>{
+       const value = mCart.querySelector(".value").value;
+    const priceId = mCart.querySelector("p").id;
+    const priceOfSelectedCart = cart.find(c=>c.id == priceId).price;
+    mCart.querySelector(".value").value = Number(value) + 1;
+    mCart.querySelector("p").innerText = priceOfSelectedCart*Number(mCart.querySelector(".value").value);
+   });
+   mCart.querySelector('.minus').addEventListener('click',()=>{
+       const value = mCart.querySelector(".value").value;
+       const priceId = mCart.querySelector("p").id;
+    const priceOfSelectedCart = cart.find(c=>c.id == priceId).price;
+    mCart.querySelector(".value").value = Number(value) - 1;
+    mCart.querySelector("p").innerText = priceOfSelectedCart*Number(mCart.querySelector(".value").value);
+   })
+  }))
+   }) 
+
+    document.querySelector("#home").addEventListener("click", ()=>{
+    document.querySelector(".movie-container").style.display = "flex";
+    document.querySelector(".movie-cart-container").style.display = "none";
+  })
+
+  //30 September
+</script>
+</html>
