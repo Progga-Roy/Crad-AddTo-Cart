@@ -50,8 +50,7 @@ const data = [
   ` <nav class="nav">
   <ul>
       <li id="#home">Home</li>
-      <li>About</li>
-      <li>Contact</li>
+      
       <p>Cart Item: <span id="cart-item">0</span><p>
   </ul>
 </nav>
